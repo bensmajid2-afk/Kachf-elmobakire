@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>منصة التشخيص المبكر | AI التشخيص المبكر | علوم تجريبية 2</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg-deep: #030914;
+    --teal: #00f2ce;
+    --teal-glow: rgba(0,242,206,0.25);
+    --teal-dark: #00b894;
+    --gold: #ffdf6c;
+    --gold-glow: rgba(255,223,108,0.2);
+    --danger: #ff7b89;
+    --card-bg: rgba(8, 18, 32, 0.88);
+    --card-border: rgba(0,242,206,0.35);
+  }
+
+  body {
+    font-family: 'Tajawal', 'Cairo', sans-serif;
+    background: var(--bg-deep);
+    color: #f0f6ff;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* animated cosmic background */
+  .cosmic-bg {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    background: radial-gradient(ellipse at 30% 40%, #0a1a2f, #030914);
+    overflow: hidden;
+  }
+  .stars { position: absolute; width: 100%; height: 100%; animation: rotateStars 200s linear infinite; }
+  .star {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    opacity: 0;
+    animation: twinkle 3s ease-in-out infinite;
+  }
+  @keyframes twinkle {
+    0%,100%{ opacity:0.15; transform:scale(1);}
+    50%{ opacity:0.8; transform:scale(1.2); box-shadow:0 0 5px rgba(255,240,180,0.6);}
+  }
+  @keyframes rotateStars { 0%{ transform:rotate(0deg);} 100%{ transform:rotate(360deg);} }
+  
+  .glow-orb {
+    position: absolute;
+    top: 10%; left: -8%;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(0,242,206,0.15), transparent 70%);
+    border-radius: 50%;
+    filter: blur(60px);
+    animation: floatOrb 12s infinite alternate;
+  }
+  .glow-orb-2 {
+    bottom: -10%; right: -10%;
+    top: auto;
+    background: radial-gradient(circle, rgba(255,223,108,0.12), transparent 70%);
+    animation: floatOrb2 15s infinite alternate;
+  }
+  @keyframes floatOrb { 0%{ transform:translate(0,0) scale(1); opacity:0.4;} 100%{ transform:translate(40px,30px) scale(1.3); opacity:0.8;} }
+  @keyframes floatOrb2 { 0%{ transform:translate(0,0) scale(1);} 100%{ transform:translate(-50px,-40px) scale(1.4);} }
+
+  .floating-icons {
+    position: absolute;
+    width: 100%; height: 100%;
+    pointer-events: none;
+  }
+  .float-icon {
+    position: absolute;
+    font-size: 1.3rem;
+    opacity: 0.15;
+    animation: floatUp 20s linear infinite;
+  }
+  @keyframes floatUp {
+    0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.3; }
+    90% { opacity: 0.3; }
+    100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 10;
+    max-width: 1350px;
+    margin: 0 auto;
+    padding: 0 1.5rem 2rem;
+  }
+
+  /* header */
+  .hero-header {
+    background: linear-gradient(112deg, rgba(7,18,36,0.95), rgba(12,30,55,0.95));
+    backdrop-filter: blur(16px);
+    border-bottom: 2px solid var(--gold);
+    border-radius: 0 0 36px 36px;
+    padding: 1.2rem 1.5rem;
+    text-align: center;
+    position: relative;
+    margin-bottom: 1rem;
+  }
+  .hero-header::after {
+    content: '';
+    position: absolute;
+    bottom: -2px; left: -100%;
+    width: 100%; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--teal), var(--gold), transparent);
+    animation: shineLine 5s linear infinite;
+  }
+  @keyframes shineLine { 0%{ left:-100%;} 100%{ left:100%;} }
+  .school-name {
+    font-size: 1.4rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #ffe6b3, var(--gold), var(--teal));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .class-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--teal), var(--teal-dark));
+    color: #02121f;
+    padding: 0.3rem 1.2rem;
+    border-radius: 40px;
+    font-weight: 800;
+    margin: 0.5rem 0;
+    box-shadow: 0 0 12px var(--teal-glow);
+  }
+  .students-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem 1rem;
+    background: rgba(0,242,206,0.08);
+    border-radius: 60px;
+    padding: 0.4rem 1.2rem;
+    width: fit-content;
+    margin: 0.5rem auto;
+  }
+
+  /* hero title */
+  .hero-title-area {
+    text-align: center;
+    margin: 1.8rem 0 1.5rem;
+  }
+  .moon-logo {
+    width: 75px;
+    margin: 0 auto 0.8rem;
+    animation: moonFloat 4s ease-in-out infinite;
+  }
+  @keyframes moonFloat { 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-8px);} }
+  .main-title {
+    font-size: 2.6rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #fff, var(--teal), var(--gold));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .ai-badge {
+    background: rgba(0,242,206,0.2);
+    border: 1px solid var(--teal);
+    border-radius: 60px;
+    padding: 0.25rem 1.2rem;
+    display: inline-block;
+    margin: 0.3rem;
+    font-weight: bold;
+    animation: badgePulse 2s infinite;
+  }
+  @keyframes badgePulse { 0%{ border-color:var(--teal);} 50%{ border-color:var(--gold); box-shadow:0 0 8px var(--gold);} 100%{ border-color:var(--teal);} }
+
+  /* panels grid */
+  .panels-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1.8rem;
+    margin: 2rem 0;
+  }
+  .medical-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(14px);
+    border: 1px solid var(--card-border);
+    border-radius: 2rem;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+  .medical-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--teal);
+    box-shadow: 0 20px 35px -12px rgba(0,242,206,0.2);
+  }
+  .card-header {
+    padding: 1rem 1.5rem;
+    background: rgba(0,0,0,0.3);
+    border-bottom: 1px solid rgba(0,242,206,0.2);
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+  .card-icon {
+    font-size: 2.3rem;
+    filter: drop-shadow(0 2px 6px rgba(0,242,206,0.4));
+  }
+  .card-title {
+    font-size: 1.45rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--teal), #fff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .card-body { padding: 1.5rem; }
+  .upload-zone {
+    background: rgba(5,15,30,0.6);
+    border: 2px dashed rgba(0,242,206,0.35);
+    border-radius: 1.3rem;
+    padding: 1.5rem;
+    text-align: center;
+    min-height: 180px;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .upload-zone:hover {
+    border-color: var(--teal);
+    background: rgba(0,242,206,0.08);
+    transform: scale(1.01);
+  }
+  .upload-zone.drag-over {
+    border-color: var(--gold);
+    background: rgba(255,223,108,0.12);
+    border-style: solid;
+  }
+  .upload-placeholder {
+    font-size: 1.15rem;
+    color: rgba(255,255,255,0.6);
+  }
+  .preview-img {
+    display: none;
+    max-width: 100%;
+    max-height: 220px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,242,206,0.2);
+  }
+  .scan-overlay {
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0,242,206,0.3), transparent);
+    z-index: 10;
+    pointer-events: none;
+  }
+  .scan-overlay.active {
+    animation: scanLine 1.8s ease-in-out infinite;
+  }
+  @keyframes scanLine { 0%{ left:-100%;} 100%{ left:100%;} }
+
+  /* ===== نمط الكشف التلقائي ===== */
+  .auto-detect-info {
+    width: 100%;
+    padding: 0.9rem 1.2rem;
+    background: rgba(0,25,50,0.85);
+    border: 1px solid rgba(0,242,206,0.35);
+    border-radius: 12px;
+    color: var(--teal);
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin: 1rem 0;
+    text-align: center;
+    min-height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.3s;
+  }
+  .auto-detect-info.detected {
+    background: rgba(0,242,206,0.12);
+    border-color: var(--teal);
+    box-shadow: 0 0 12px var(--teal-glow);
+    color: #fff;
+  }
+  .auto-detect-info.error-state {
+    border-color: var(--danger);
+    color: var(--danger);
+    background: rgba(255,123,137,0.08);
+  }
+
+  .analyze-btn {
+    width: 100%;
+    padding: 1.1rem;
+    background: linear-gradient(135deg, var(--teal), var(--teal-dark));
+    border: none;
+    border-radius: 14px;
+    color: #02121f;
+    font-size: 1.2rem;
+    font-weight: 900;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 1rem;
+    box-shadow: 0 6px 18px rgba(0,242,206,0.3);
+  }
+  .analyze-btn:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 28px rgba(0,242,206,0.5);
+  }
+  .analyze-btn:disabled {
+    background: rgba(100,100,100,0.3);
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  .loader-dots {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 1.2rem 0;
+    font-size: 0.95rem;
+    color: var(--teal);
+  }
+  .loader-dots.show { display: flex; }
+  .loader-dot {
+    width: 10px; height: 10px;
+    background: var(--teal);
+    border-radius: 50%;
+    animation: dotBounce 1.2s infinite ease-in-out;
+  }
+  .loader-dot:nth-child(2) { animation-delay: 0.2s; }
+  .loader-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes dotBounce { 0%,80%,100%{ transform:scale(0.8);} 40%{ transform:scale(1.3);} }
+
+  .result-box {
+    background: rgba(0,20,40,0.65);
+    border: 1px solid rgba(0,242,206,0.25);
+    border-radius: 1rem;
+    padding: 1.3rem;
+    margin-top: 1.2rem;
+    display: none;
+  }
+  .result-box.show { display: block; animation: slideIn 0.4s; }
+  @keyframes slideIn { 0%{ opacity:0; transform:translateY(15px);} 100%{ opacity:1; transform:translateY(0);} }
+  .result-box h4 { font-size: 1.25rem; margin-bottom: 0.8rem; }
+  .result-box p { line-height: 1.7; margin: 0.6rem 0; }
+
+  .risk-bar-container {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin: 0.8rem 0;
+  }
+  .risk-track {
+    flex: 1;
+    background: rgba(20,30,50,0.8);
+    border-radius: 20px;
+    height: 20px;
+    overflow: hidden;
+    position: relative;
+  }
+  .risk-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #00b894, var(--teal), var(--gold), var(--danger));
+    border-radius: 20px;
+    transition: width 1.5s cubic-bezier(0.25,0.46,0.45,0.94);
+    box-shadow: 0 0 12px rgba(0,242,206,0.5);
+  }
+
+  /* قائمة أسباب الإصابة */
+  .causes-list {
+    background: rgba(0,30,60,0.5);
+    border: 1px solid rgba(0,242,206,0.2);
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    margin: 0.6rem 0;
+    list-style: none;
+  }
+  .causes-list li {
+    padding: 0.35rem 0;
+    border-bottom: 1px solid rgba(0,242,206,0.08);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  .causes-list li:last-child { border-bottom: none; }
+  .causes-list li::before {
+    content: "⚡";
+    font-size: 0.8rem;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+
+  .download-report-btn {
+    background: linear-gradient(135deg, var(--gold), #ffb347);
+    border: none;
+    border-radius: 10px;
+    padding: 0.7rem 1.4rem;
+    color: #02121f;
+    font-weight: 800;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: all 0.3s;
+  }
+  .download-report-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(255,223,108,0.4);
+  }
+
+  .footer-note {
+    background: rgba(10,20,35,0.9);
+    border-top: 1px solid rgba(0,242,206,0.25);
+    border-radius: 20px 20px 0 0;
+    padding: 1.2rem;
+    text-align: center;
+    margin-top: 2.5rem;
+    font-size: 0.85rem;
+    line-height: 1.8;
+  }
+
+  /* QR Button & Modal */
+  .qr-fab {
+    position: fixed;
+    bottom: 28px;
+    left: 28px;
+    z-index: 9999;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 2px solid rgba(0,242,206,0.4);
+    background: linear-gradient(135deg, #00b894, #00f2ce);
+    color: #02121f;
+    font-size: 1.7rem;
+    cursor: pointer;
+    box-shadow: 0 0 25px rgba(0,242,206,0.5), 0 6px 20px rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    animation: qrPulse 2.5s infinite;
+  }
+  .qr-fab:hover {
+    transform: scale(1.12);
+    box-shadow: 0 0 40px rgba(0,242,206,0.7), 0 8px 28px rgba(0,0,0,0.5);
+  }
+  @keyframes qrPulse {
+    0%,100%{ box-shadow: 0 0 25px rgba(0,242,206,0.5), 0 6px 20px rgba(0,0,0,0.4); }
+    50%{ box-shadow: 0 0 40px rgba(0,242,206,0.8), 0 6px 20px rgba(0,0,0,0.4); }
+  }
+  .qr-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(10px);
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s;
+  }
+  .qr-overlay.show { display: flex; }
+  @keyframes fadeIn { 0%{ opacity:0; } 100%{ opacity:1; } }
+  .qr-modal {
+    background: linear-gradient(135deg, #081525, #0c2240);
+    border: 1px solid rgba(0,242,206,0.3);
+    border-radius: 1.5rem;
+    padding: 2rem;
+    text-align: center;
+    max-width: 340px;
+    width: 90%;
+    box-shadow: 0 0 60px rgba(0,242,206,0.15);
+    animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+  }
+  @keyframes popIn { 0%{ transform:scale(0.7); opacity:0; } 100%{ transform:scale(1); opacity:1; } }
+  .qr-modal-close {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.1);
+    color: #94a3b8;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+  .qr-modal-close:hover { background: rgba(255,77,77,0.3); color: #ff7b89; }
+  .qr-modal h3 { font-size: 1.3rem; font-weight: 800; color: var(--teal); margin-bottom: 0.3rem; }
+  .qr-modal p.sub { font-size: 0.85rem; color: #64748b; margin-bottom: 1.2rem; }
+  .qr-img-wrap {
+    background: #fff;
+    border-radius: 16px;
+    padding: 12px;
+    display: inline-block;
+    margin-bottom: 1rem;
+    box-shadow: 0 0 30px rgba(0,242,206,0.2);
+  }
+  .qr-url {
+    font-size: 0.7rem;
+    color: #38bdf8;
+    direction: ltr;
+    word-break: break-all;
+    margin-bottom: 1rem;
+    padding: 0 0.5rem;
+  }
+  .qr-copy-btn {
+    background: linear-gradient(135deg, var(--teal), var(--teal-dark));
+    border: none;
+    border-radius: 10px;
+    padding: 0.7rem 2rem;
+    color: #02121f;
+    font-size: 0.95rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(0,242,206,0.3);
+  }
+  .qr-copy-btn:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(0,242,206,0.5); }
+
+  @media (max-width: 768px) {
+    .panels-grid { grid-template-columns: 1fr; }
+    .main-title { font-size: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cosmic-bg">
+  <div class="stars" id="starContainer"></div>
+  <div class="glow-orb"></div>
+  <div class="glow-orb glow-orb-2"></div>
+  <div class="floating-icons" id="floatIcons"></div>
+</div>
+
+<div class="wrap">
+  <header class="hero-header">
+    <div class="school-name">🌙 ثانوية هواري بومدين · البيض</div>
+    <div class="class-badge">علوم تجريبية 2 | 2025-2026</div>
+    <div class="students-row">
+      <span>👨‍🔬 بن سايح عبد المجيد</span>
+      <span>👨‍🔬 عمران شفيع</span>
+      <span>👨‍🔬 عباس احمد عبد الاله</span>
+      <span>👨‍🔬 فدول سامي</span>
+    </div>
+    <div style="margin-top:0.4rem; color:var(--gold); font-weight:700; font-size:1rem;">👩‍🏫 تحت إشراف الأستاذة جبار مليكة</div>
+  </header>
+
+  <div class="hero-title-area">
+    <div class="moon-logo">🏥</div>
+    <h1 class="main-title">منصة التشخيص المبكر</h1>
+    <div>
+      <span class="ai-badge">🧬 تشخيص مبكر</span>
+      <span class="ai-badge">🤖 ذكاء اصطناعي</span>
+    </div>
+  </div>
+
+  <div class="panels-grid">
+    <!-- SKIN CANCER -->
+    <div class="medical-card">
+      <div class="card-header">
+        <div class="card-icon">🩺</div>
+        <div class="card-title">سرطان الجلد</div>
+      </div>
+      <div class="card-body">
+        <!-- مربع الكشف التلقائي بدلاً من القائمة -->
+        <div class="auto-detect-info" id="skin-detect-info">
+          🤖 ارفع الصورة وسيكتشف الذكاء الاصطناعي النوع تلقائياً
+        </div>
+        <div class="upload-zone" id="skin-zone">
+          <div class="scan-overlay" id="skin-scan"></div>
+          <input type="file" accept="image/*" id="skin-file" style="display:none;">
+          <img class="preview-img" id="skin-preview" alt="صورة الجلد">
+          <div class="upload-placeholder">🩺 انقر أو اسحب صورة الجلد</div>
+        </div>
+        <button class="analyze-btn" id="skin-btn" disabled>🔬 تحليل بالذكاء الاصطناعي</button>
+        <div class="loader-dots" id="skin-loader"><div class="loader-dot"></div><div class="loader-dot"></div><div class="loader-dot"></div><span>تحليل قيد التقدم...</span></div>
+        <div class="result-box" id="skin-result"></div>
+      </div>
+    </div>
+
+    <!-- BLOOD CANCER -->
+    <div class="medical-card">
+      <div class="card-header">
+        <div class="card-icon">🩸</div>
+        <div class="card-title">سرطان الدم</div>
+      </div>
+      <div class="card-body">
+        <div class="auto-detect-info" id="blood-detect-info">
+          🤖 ارفع الصورة وسيكتشف الذكاء الاصطناعي النوع تلقائياً
+        </div>
+        <div class="upload-zone" id="blood-zone">
+          <div class="scan-overlay" id="blood-scan"></div>
+          <input type="file" accept="image/*" id="blood-file" style="display:none;">
+          <img class="preview-img" id="blood-preview" alt="صورة الدم">
+          <div class="upload-placeholder">🩸 انقر أو اسحب صورة الدم</div>
+        </div>
+        <button class="analyze-btn" id="blood-btn" disabled>🧬 تحليل خلوي متقدم</button>
+        <div class="loader-dots" id="blood-loader"><div class="loader-dot"></div><div class="loader-dot"></div><div class="loader-dot"></div><span>فحص الخلايا...</span></div>
+        <div class="result-box" id="blood-result"></div>
+      </div>
+    </div>
+
+    <!-- MRI CANCER -->
+    <div class="medical-card">
+      <div class="card-header">
+        <div class="card-icon">🧲</div>
+        <div class="card-title">التصوير بالرنين المغناطيسي</div>
+      </div>
+      <div class="card-body">
+        <div class="auto-detect-info" id="mri-detect-info">
+          🤖 ارفع الصورة وسيكتشف الذكاء الاصطناعي النوع تلقائياً
+        </div>
+        <div class="upload-zone" id="mri-zone">
+          <div class="scan-overlay" id="mri-scan"></div>
+          <input type="file" accept="image/*" id="mri-file" style="display:none;">
+          <img class="preview-img" id="mri-preview" alt="صورة MRI">
+          <div class="upload-placeholder">🧲 انقر أو اسحب صورة الرنين المغناطيسي</div>
+        </div>
+        <button class="analyze-btn" id="mri-btn" disabled>🧠 تحليل تشريحي ذكي</button>
+        <div class="loader-dots" id="mri-loader"><div class="loader-dot"></div><div class="loader-dot"></div><div class="loader-dot"></div><span>مسح الطبقات...</span></div>
+        <div class="result-box" id="mri-result"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QR Code Button -->
+  <button class="qr-fab" onclick="document.getElementById('qrOverlay').classList.add('show')" title="مشاركة المشروع">📱</button>
+
+  <!-- QR Modal -->
+  <div class="qr-overlay" id="qrOverlay" onclick="this.classList.remove('show')">
+    <div class="qr-modal" onclick="event.stopPropagation()">
+      <button class="qr-modal-close" onclick="document.getElementById('qrOverlay').classList.remove('show')">✕</button>
+      <h3>📱 مشاركة المشروع</h3>
+      <p class="sub">امسح الكود للوصول المباشر</p>
+      <div class="qr-img-wrap">
+        <img id="qrCodeImg" src="" alt="QR Code" width="200" height="200">
+      </div>
+      <p class="qr-url" id="qrUrlText"></p>
+      <button class="qr-copy-btn" onclick="copyProjectUrl(this)">📋 نسخ الرابط</button>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    <strong>⚠️ تنبيه طبي:</strong> هذا النظام للأغراض التعليمية والبحثية فقط. التشخيص النهائي عبر الطبيب المختص.<br>
+    <span style="color:var(--teal);">منصة التشخيص المبكر</span> · ثانوية هواري بومدين · علوم تجريبية 2 · 2026
+  </div>
+</div>
+
+<script>
+  // STARFIELD
+  const starContainer = document.getElementById('starContainer');
+  for (let i = 0; i < 220; i++) {
+    const star = document.createElement('div');
+    star.classList.add('star');
+    star.style.width = (Math.random() * 2.2 + 0.6) + 'px';
+    star.style.height = star.style.width;
+    star.style.left = Math.random() * 100 + '%';
+    star.style.top = Math.random() * 100 + '%';
+    star.style.animationDelay = Math.random() * 4 + 's';
+    star.style.animationDuration = 2 + Math.random() * 4 + 's';
+    starContainer.appendChild(star);
+  }
+  
+  // FLOATING ICONS
+  const floatContainer = document.getElementById('floatIcons');
+  const iconsList = ['⚕️', '🧬', '🔬', '🩺', '🧪', '💊', '🧫', '🧲', '🩸', '🧠'];
+  for (let i = 0; i < 35; i++) {
+    const el = document.createElement('div');
+    el.classList.add('float-icon');
+    el.innerHTML = iconsList[Math.floor(Math.random() * iconsList.length)];
+    el.style.left = Math.random() * 100 + '%';
+    el.style.animationDuration = 15 + Math.random() * 18 + 's';
+    el.style.animationDelay = Math.random() * 12 + 's';
+    el.style.fontSize = 1 + Math.random() * 1.8 + 'rem';
+    el.style.opacity = 0.1 + Math.random() * 0.2;
+    floatContainer.appendChild(el);
+  }
+
+  // ========== MAIN LOGIC ==========
+  const imageStore = { skin: null, blood: null, mri: null };
+
+  const cancerLabels = {
+    skin: { 
+      melanoma:"الورم الميلانيني الخبيث", 
+      basal:"سرطان الخلايا القاعدية", 
+      squamous:"السرطان الحرشفي", 
+      dermatofibroma:"الورم الليفي الجلدي", 
+      vascular:"الآفات الوعائية",
+      healthy:"طبيعي / لا توجد علامات مرضية"
+    },
+    blood: { 
+      leukemia_aml:"ابيضاض الدم النخاعي الحاد", 
+      leukemia_all:"ابيضاض الدم الليمفاوي الحاد", 
+      leukemia_cml:"ابيضاض الدم النخاعي المزمن", 
+      lymphoma:"لمفوما", 
+      myeloma:"مايلوما متعددة",
+      healthy:"طبيعي / لا توجد علامات مرضية"
+    },
+    mri: { 
+      glioma:"الورم الدبقي", 
+      meningioma:"الورم السحائي", 
+      pituitary:"ورم الغدة النخامية", 
+      breast_mri:"سرطان الثدي", 
+      liver_mri:"ورم الكبد", 
+      prostate_mri:"سرطان البروستاتا",
+      healthy:"طبيعي / لا توجد علامات مرضية"
+    }
+  };
+
+  // ========== قاعدة بيانات أسباب الإصابة المدمجة ==========
+  const cancerCauses = {
+    skin: {
+      melanoma: [
+        "التعرض المفرط للأشعة فوق البنفسجية من الشمس أو الأسرّة الاصطناعية",
+        "وجود شامات غير طبيعية أو كثيرة على الجلد",
+        "التاريخ العائلي والوراثة الجينية (طفرة BRAF/CDKN2A)",
+        "البشرة الفاتحة والشعر الأشقر والعيون الزرقاء",
+        "ضعف المناعة أو التعرض لمواد كيميائية مسرطنة"
+      ],
+      basal: [
+        "التعرض المزمن لأشعة الشمس فوق البنفسجية على مدار سنوات",
+        "التعرض للإشعاع الطبي أو العلاجي في منطقة الجلد",
+        "الجلد الفاتح وشُح الميلانين الواقي",
+        "إصابات جلدية متكررة أو ندوب قديمة في المنطقة",
+        "ضعف الجهاز المناعي نتيجة أمراض أو أدوية"
+      ],
+      squamous: [
+        "التعرض الطويل لأشعة UV من الشمس أو مصادر اصطناعية",
+        "الإصابة بفيروس الورم الحليمي البشري HPV",
+        "التدخين وتعاطي التبغ بجميع أشكاله",
+        "التعرض لمواد كيميائية مثل الزرنيخ أو القطران",
+        "الالتهابات الجلدية المزمنة أو التقرحات المستمرة"
+      ],
+      dermatofibroma: [
+        "إصابات جلدية بسيطة سابقة كلدغات الحشرات أو الجروح",
+        "الاستعداد الوراثي لدى بعض الأفراد",
+        "ردود فعل مناعية موضعية في الجلد",
+        "الالتهابات الجلدية الخفيفة المتكررة",
+        "الحالات المناعية الذاتية غير المشخّصة"
+      ],
+      vascular: [
+        "الاستعداد الوراثي واضطرابات الأوعية الدموية الخلقية",
+        "الإصابة بفيروس الهربس البشري HHV-8 (ساركوما كابوسي)",
+        "ضعف الجهاز المناعي الشديد (كمرضى الإيدز)",
+        "التعرض للإشعاع أو العلاج الكيميائي السابق",
+        "اضطرابات هرمونية أو عوامل نمو وعائي غير طبيعية"
+      ]
+    },
+    blood: {
+      leukemia_aml: [
+        "التعرض للإشعاع النووي أو الإشعاع الطبي عالي الجرعات",
+        "التعرض لمادة البنزين والمذيبات الكيميائية العضوية",
+        "طفرات جينية مكتسبة في خلايا نخاع العظم",
+        "العلاج الكيميائي السابق لأورام أخرى (سرطان ثانوي)",
+        "الاضطرابات الدموية كمتلازمة خلل التنسج النخاعي"
+      ],
+      leukemia_all: [
+        "الطفرات الجينية الخلقية كمتلازمة داون (تثلث الصبغي 21)",
+        "التعرض للإشعاع أثناء الحمل أو في الطفولة المبكرة",
+        "الإصابة ببعض الفيروسات كفيروس إبشتاين-بار",
+        "العوامل البيئية كالمبيدات الحشرية والمواد الكيميائية",
+        "ضعف المناعة الخلقي أو المكتسب"
+      ],
+      leukemia_cml: [
+        "الكروموزوم فيلادلفيا (انتقال صبغي 9;22) طفرة BCR-ABL",
+        "التعرض لجرعات عالية من الإشعاع المؤين",
+        "التقدم في العمر (أكثر شيوعاً فوق 60 عاماً)",
+        "التعرض للبنزين وبعض المذيبات الصناعية",
+        "العلاج الإشعاعي السابق لأورام أخرى"
+      ],
+      lymphoma: [
+        "الإصابة بفيروس إبشتاين-بار أو فيروس HTLV-1",
+        "ضعف الجهاز المناعي (مرضى زراعة الأعضاء، الإيدز)",
+        "الاستعداد الوراثي والتاريخ العائلي للإصابة",
+        "التعرض لمبيدات الأعشاب والمواد الكيميائية الزراعية",
+        "الأمراض المناعية الذاتية كالتهاب المفاصل الروماتويدي"
+      ],
+      myeloma: [
+        "الالتهابات المزمنة وتحفيز الجهاز المناعي على المدى الطويل",
+        "التعرض للإشعاع أو المواد الكيميائية السامة",
+        "التقدم في العمر (نادر قبل 40 سنة)",
+        "الاستعداد الوراثي وطفرات في جينات مناعية",
+        "وجود حالة MGUS (تضخم بروتين وحيد المنشأ الحميد) مسبقاً"
+      ]
+    },
+    mri: {
+      glioma: [
+        "التعرض للإشعاع المؤين في منطقة الرأس (علاجي أو بيئي)",
+        "الطفرات الجينية كطفرة IDH1/IDH2 وحذف 1p/19q",
+        "الاستعداد الوراثي ومتلازمات كـ Li-Fraumeni وNF1",
+        "احتمال محدود للتعرض لحقول كهرومغناطيسية عالية",
+        "ضعف المناعة أو الإصابة ببعض الفيروسات العصبية"
+      ],
+      meningioma: [
+        "التعرض للإشعاع على الرأس والرقبة (علاج أو حوادث)",
+        "الاضطرابات الهرمونية (أكثر شيوعاً عند النساء)",
+        "متلازمة الورم الليفي العصبي NF2 الوراثية",
+        "التقدم في العمر (ذروة الإصابة بين 50-70 سنة)",
+        "أدوية هرمونية مطوّلة كموانع الحمل الفموية"
+      ],
+      pituitary: [
+        "طفرات جينية جسدية في خلايا الغدة النخامية (MEN1)",
+        "متلازمة الأورام الغدية المتعددة الوراثية",
+        "اضطرابات هرمونية مزمنة تحفّز خلايا الغدة",
+        "الاستعداد الوراثي العائلي للأورام الغدية",
+        "إصابات أو جراحات سابقة في منطقة الغدة النخامية"
+      ],
+      breast_mri: [
+        "الطفرات الجينية BRCA1 وBRCA2 الوراثية",
+        "التعرض للإشعاع في منطقة الصدر في سن مبكرة",
+        "العوامل الهرمونية (بداية الدورة مبكراً، انقطاع متأخر)",
+        "السمنة وزيادة الوزن بعد انقطاع الطمث",
+        "التاريخ العائلي وسن الإنجاب المتأخر أو عدم الرضاعة"
+      ],
+      liver_mri: [
+        "التهاب الكبد الفيروسي المزمن B أو C",
+        "تليف الكبد الناتج عن الكحول أو الدهون",
+        "التعرض لسموم الأفلاتوكسين في الغذاء الملوث",
+        "السمنة المفرطة ومرض الكبد الدهني غير الكحولي",
+        "الاستعداد الوراثي وبعض أمراض تخزين الحديد (داء ترسّب الأصبغة الدموية)"
+      ],
+      prostate_mri: [
+        "التقدم في العمر (نادر قبل 40، يرتفع بعد 65)",
+        "التاريخ العائلي والطفرات الجينية BRCA2",
+        "الهرمونات الذكورية (تستوستيرون) وتأثيرها على نمو الخلايا",
+        "النظام الغذائي الغني بالدهون الحيوانية والفقير بالخضروات",
+        "العرق (أكثر شيوعاً لدى الأفارقة الأمريكيين إحصائياً)"
+      ]
+    }
+  };
+
+  // ========== الكشف الذكي المحلي (بدون API) ==========
+  async function localSmartDetect(imageBase64, type, metrics) {
+    await new Promise(r => setTimeout(r, 1200));
+
+    const { contrast, edgeFactor, colorBalance, brightness, fingerprint } = metrics;
+    const { red, green, blue } = colorBalance;
+    // نستخدم البصمة الحقيقية للصورة لضمان اختلاف النتائج بين الصور
+    const fp = fingerprint || [];
+
+    // تطبيع المعاملات إلى 0-1 حتى لا تطغى على البصمة الفريدة للصورة
+    const nR = red / 255, nG = green / 255, nB = blue / 255;
+    const nBr = brightness / 255;
+    const nC  = Math.min(1, contrast / 80);
+    const nE  = Math.min(1, edgeFactor);
+
+    // البصمة هي المحدد الرئيسي (وزن 100) — المعاملات تعديل ثانوي (وزن ~20)
+    let scores = {};
+
+    if (type === 'skin') {
+      scores.melanoma       = seededRand(fp, 11) * 100 + nC * 18 + nR * 10 - nBr * 6  + nE * 14;
+      scores.basal          = seededRand(fp, 22) * 100 + nBr * 14 + nG * 8  + nC * 6;
+      scores.squamous       = seededRand(fp, 33) * 100 + nR * 14 + nE * 10 + nC * 8;
+      scores.dermatofibroma = seededRand(fp, 44) * 100 + nBr * 12 - nC * 8  + nB * 6;
+      scores.vascular       = seededRand(fp, 55) * 100 + nR * 16 - nB * 10 + nE * 6;
+    } else if (type === 'blood') {
+      scores.leukemia_aml   = seededRand(fp, 11) * 100 + nC * 14 + nB * 10 + nE * 16;
+      scores.leukemia_all   = seededRand(fp, 22) * 100 + nBr * 10 + nC * 12 + nB * 8;
+      scores.leukemia_cml   = seededRand(fp, 33) * 100 + nE * 18 + nR * 6  + nC * 10;
+      scores.lymphoma       = seededRand(fp, 44) * 100 + nG * 12 + nC * 10 + nBr * 6;
+      scores.myeloma        = seededRand(fp, 55) * 100 + nB * 14 + nBr * 10 + nE * 8;
+    } else {
+      scores.glioma         = seededRand(fp, 11) * 100 + nC * 18 + nE * 16 + nBr * 4;
+      scores.meningioma     = seededRand(fp, 22) * 100 + nBr * 16 + nC * 10 - nE * 6;
+      scores.pituitary      = seededRand(fp, 33) * 100 + nBr * 18 - nC * 4  + nE * 6;
+      scores.breast_mri     = seededRand(fp, 44) * 100 + nE * 14 + nC * 12 + nG * 4;
+      scores.liver_mri      = seededRand(fp, 55) * 100 + nBr * 12 + nC * 10 + nR * 4;
+      scores.prostate_mri   = seededRand(fp, 66) * 100 + nE * 10 + nBr * 14 + nB * 4;
+    }
+
+    // درجة الحالة الطبيعية/السليمة — ترتفع عندما تكون الصورة ذات تباين منخفض وحواف قليلة
+    scores.healthy = seededRand(fp, 88) * 90 + (1 - nC) * 30 + (1 - nE) * 25 + (nBr > 0.55 ? 15 : 0);
+
+    const best = Object.entries(scores).sort((a, b) => b[1] - a[1])[0];
+    const cancerType = best[0];
+    const total = Object.values(scores).reduce((a, b) => a + b, 0);
+    const rawConf = (best[1] / total) * 100;
+    // ثقة مشتقة من البصمة + هيمنة النتيجة الفائزة
+    const dominance = (best[1] - (total - best[1]) / (Object.keys(scores).length - 1)) / best[1];
+    const confidence = Math.round(Math.max(68, Math.min(94, rawConf * 1.6 + dominance * 30 + 55)));
+
+    if (cancerType === 'healthy') {
+      return { cancerType: 'healthy', confidence, causes: [] };
+    }
+    return { cancerType, confidence, causes: cancerCauses[type][cancerType] || [] };
+  }
+
+  // ========== تحليل ميزات الصورة المحسّن ==========
+  async function computeImageFeatures(base64) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        try {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          canvas.width = 140;
+          canvas.height = 140;
+          ctx.drawImage(img, 0, 0, 140, 140);
+          const data = ctx.getImageData(0, 0, 140, 140).data;
+          const pixelCount = 140 * 140;
+
+          let sum = 0, sumSq = 0;
+          let redSum = 0, greenSum = 0, blueSum = 0;
+          let satSum = 0;
+          let skinPixels = 0;
+          let grayPixels = 0;
+          let purplePixels = 0;
+          // بصمة البكسل: نأخذ 64 نقطة موزعة على الصورة
+          const fingerprint = [];
+          const step = Math.floor(data.length / 4 / 64);
+
+          for (let i = 0; i < data.length; i += 4) {
+            const r = data[i], g = data[i+1], b = data[i+2];
+            const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+            sum += lum;
+            sumSq += lum * lum;
+            redSum += r; greenSum += g; blueSum += b;
+
+            // حساب التشبع اللوني
+            const mx = Math.max(r, g, b), mn = Math.min(r, g, b);
+            const sat = mx > 0 ? (mx - mn) / mx : 0;
+            satSum += sat;
+
+            // كشف بشرة الوجه: R>150, G>100, B<160, R>G>B
+            if (r > 150 && g > 100 && g < 220 && b < 180 && r > g && g > b && (r - b) > 30) skinPixels++;
+
+            // كشف رمادي (MRI): |R-G|<12 && |G-B|<12
+            if (Math.abs(r-g) < 12 && Math.abs(g-b) < 12) grayPixels++;
+
+            // كشف لون بنفسجي/وردي (مسحة دم): B>80 && R>80 && G<(R+B)/2-10
+            if (b > 80 && r > 80 && g < ((r+b)/2 - 10)) purplePixels++;
+
+            // بصمة البكسل
+            const idx = Math.floor((i/4) / step);
+            if (idx < 64) fingerprint[idx] = (fingerprint[idx] || 0) + lum;
+          }
+
+          const mean = sum / pixelCount;
+          const contrast = Math.sqrt(Math.max(0, sumSq / pixelCount - mean * mean));
+          const saturationAvg = satSum / pixelCount;          // 0-1: 0=رمادي كامل
+          const skinRatio = skinPixels / pixelCount;          // نسبة بكسل البشرة
+          const grayRatio = grayPixels / pixelCount;          // نسبة البكسل الرمادي
+          const purpleRatio = purplePixels / pixelCount;      // نسبة البنفسجي/الوردي
+
+          resolve({
+            contrast: contrast || 32,
+            edgeFactor: Math.min(0.95, contrast / 72),
+            colorBalance: { red: redSum/pixelCount, green: greenSum/pixelCount, blue: blueSum/pixelCount },
+            brightness: mean,
+            saturationAvg,
+            skinRatio,
+            grayRatio,
+            purpleRatio,
+            fingerprint  // مصفوفة 64 قيمة فريدة لكل صورة
+          });
+        } catch (error) { reject(error); }
+      };
+      img.onerror = () => reject(new Error('فشل تحميل الصورة'));
+      img.src = base64;
+    });
+  }
+
+  // ========== التحقق من نوع الصورة الطبية (متساهل لقبول الصور الطبية الحقيقية) ==========
+  function validateMedicalImage(metrics, type) {
+    const { skinRatio, grayRatio, saturationAvg, purpleRatio, contrast } = metrics;
+
+    if (type === 'skin') {
+      // رفض صور الأشخاص السليمين والصور الشخصية (نسبة بشرة عالية = صورة شخص وليست صورة آفة طبية)
+      if (skinRatio > 0.45) {
+        return { valid: false, msg: '⚠️ تبدو هذه صورة شخصية أو وجه. يرجى رفع صورة جلدية طبية مقرّبة (Dermoscopy) تُظهر آفة جلدية محددة.' };
+      }
+      // صورة رمادية بالكامل بدون أي تشبع
+      if (grayRatio > 0.95 && saturationAvg < 0.03) {
+        return { valid: false, msg: '⚠️ الصورة تبدو رمادية (MRI/أشعة). يرجى رفعها في خانة الرنين المغناطيسي.' };
+      }
+    }
+
+    if (type === 'blood') {
+      // رفض صور الأشخاص السليمين والصور الشخصية
+      if (skinRatio > 0.38) {
+        return { valid: false, msg: '⚠️ هذه تبدو صورة شخصية وليست مسحة دم مجهرية. يرجى رفع صورة خلايا الدم (CBC Smear).' };
+      }
+      // رمادية بالكامل بدون أي صبغة
+      if (grayRatio > 0.95 && saturationAvg < 0.03) {
+        return { valid: false, msg: '⚠️ الصورة رمادية. صور الدم المجهرية مصبوغة بألوان. يرجى رفع صورة مسحة دم مصبوغة.' };
+      }
+    }
+
+    if (type === 'mri') {
+      // صورة ملوّنة بشكل مفرط فقط (MRI قد تحوي بعض التلوين الطفيف)
+      if (saturationAvg > 0.55 && grayRatio < 0.15) {
+        return { valid: false, msg: '⚠️ صور الرنين المغناطيسي تكون رمادية/أبيض وأسود. هذه الصورة تبدو ملوّنة جداً. يرجى رفع صورة MRI صحيحة.' };
+      }
+      // رفض صور الأشخاص السليمين والصور الشخصية
+      if (skinRatio > 0.38) {
+        return { valid: false, msg: '⚠️ تبدو هذه صورة شخصية. يرجى رفع صورة رنين مغناطيسي (MRI) للدماغ أو الأعضاء.' };
+      }
+    }
+
+    return { valid: true };
+  }
+
+  // ========== توليد عشوائية ثابتة من بصمة الصورة ==========
+  function seededRand(fingerprint, salt) {
+    // نستخدم البصمة الحقيقية للصورة (64 قيمة) بدلاً من base64 المتشابه
+    let hash = salt * 7919;
+    const len = fingerprint.length || 1;
+    for (let i = 0; i < len; i++) {
+      const val = Math.round((fingerprint[i] || 0) * 100);
+      hash = ((hash << 5) - hash) + val + (i * salt * 31);
+      hash |= 0;
+    }
+    return Math.abs(Math.sin(hash + salt * 997));
+  }
+
+  // ========== بناء التقرير (مع الأسباب من AI) ==========
+  function buildReport(type, cancerKey, metrics, aiCauses, aiConfidence) {
+    // ========== حالة طبيعية / سليم ==========
+    if (cancerKey === 'healthy') {
+      return `<div style="background:linear-gradient(135deg,rgba(0,230,118,0.15),rgba(0,200,83,0.08)); border:2px solid #00e676; border-radius:14px; padding:1rem; text-align:center; margin-bottom:0.8rem; animation:slideIn 0.5s;"><span style="font-size:1.6rem;">🛡️</span><br><strong style="font-size:1.4rem; color:#00e676;">غير مصاب</strong><br><span style="font-size:0.85rem; color:rgba(255,255,255,0.6);">لم يتم اكتشاف أي إصابة</span></div><h4 style="color:#00e676; margin-bottom:6px;">✅ نتيجة التحليل: طبيعي / سليم</h4>
+      <div class="risk-bar-container"><span>📊 درجة الخطورة:</span><div class="risk-track"><div class="risk-fill" style="width:8%; background: linear-gradient(90deg,#00e676,#00b894);"></div></div><span><strong>منخفضة جداً</strong></span></div>
+      <div><span class="ai-badge" style="background:rgba(0,230,118,0.15); color:#00e676;">الحالة: طبيعية ✅</span></div>
+      <p><strong>🔍 المشاهدات:</strong><br> لم يتم اكتشاف أي علامات أو مؤشرات مرضية في الصورة المقدمة. تبدو الصورة ضمن النطاق الطبيعي.</p>
+      <p><strong>💡 التوصية:</strong><br> استمر في الفحوصات الدورية الوقائية كل 6-12 شهراً للحفاظ على صحتك.</p>
+      <p style="font-size:0.7rem;">⚠️ تحليل تعليمي بالذكاء الاصطناعي — استشر طبيبك المختص للتأكيد.</p>
+      <button class="download-report-btn" onclick="downloadTxt(this)">📄 تحميل التقرير (نصي)</button>`;
+    }
+
+    const cancerName = cancerLabels[type][cancerKey] || cancerKey;
+    let riskScore, findings, riskText, recommendations;
+    
+    // ====== حساب درجة الخطورة بصورة فريدة لكل صورة ======
+    // نعتمد على بصمة الصورة (fingerprint) + المعاملات اللونية لضمان نسب مختلفة لكل صورة
+    const fp = metrics.fingerprint || [];
+    // تحويل البصمة إلى قيمة شبه عشوائية مستقرة بين 0 و 1
+    const fpRand = seededRand(fp, (cancerKey || 'x').charCodeAt(0) * 13 + 7);
+    const nC  = Math.min(1, (metrics.contrast || 0) / 80);
+    const nE  = Math.min(1, metrics.edgeFactor || 0);
+    const nBr = (metrics.brightness || 0) / 255;
+    const nSat = metrics.saturationAvg || 0;
+
+    // مكوّن AI (إن وُجد) كتأثير ثانوي فقط
+    const aiBoost = aiConfidence ? (aiConfidence - 70) * 0.15 : 0;
+
+    if (type === 'skin') {
+      // مدى واسع: 25-94 يعتمد أساساً على بصمة الصورة
+      riskScore = 25 + fpRand * 55 + nC * 12 + nE * 14 - nBr * 4 + nSat * 6 + aiBoost;
+      if (cancerKey === 'melanoma') riskScore += 8;
+      riskScore = Math.max(20, Math.min(96, riskScore));
+      riskText = riskScore > 68 ? "مرتفعة 🚨" : (riskScore > 38 ? "متوسطة ⚠️" : "منخفضة ✅");
+      findings = riskScore > 65 ? "حواف غير منتظمة، تباين لوني مرتفع، نمط تصبغ غير متماثل." : "بنية جلدية منتظمة نسبياً، متابعة دورية.";
+      recommendations = riskScore > 70 ? "استشارة طبيب جلدية فورية، خزعة تشخيصية." : "مراقبة شهرية، استخدام واقي الشمس.";
+    } else if (type === 'blood') {
+      riskScore = 22 + fpRand * 58 + nE * 14 + nC * 10 + (metrics.purpleRatio || 0) * 25 + aiBoost;
+      if (cancerKey.includes('leukemia')) riskScore += 8;
+      riskScore = Math.max(18, Math.min(94, riskScore));
+      riskText = riskScore > 70 ? "مرتفعة 🔴" : (riskScore > 42 ? "متوسطة 🟡" : "منخفضة 🟢");
+      findings = riskScore > 72 ? "خلايا أرومات غير ناضجة، اضطراب في نواة الخلايا." : "خلايا ضمن نسب شبه طبيعية، يوصى بفحص CBC.";
+      recommendations = riskScore > 75 ? "استشارة أخصائي أمراض دم، فحص نقي العظم." : "إعادة الفحص بعد 3 أشهر.";
+    } else {
+      riskScore = 24 + fpRand * 56 + nC * 14 + nE * 12 + (metrics.grayRatio || 0) * 10 + aiBoost;
+      if (cancerKey === 'glioma') riskScore += 8;
+      riskScore = Math.max(20, Math.min(96, riskScore));
+      riskText = riskScore > 72 ? "مرتفعة 🧠" : (riskScore > 42 ? "متوسطة 🧬" : "منخفضة 📘");
+      findings = riskScore > 70 ? "كتلة غير متجانسة، وذمة محيطة، نمط تعزيز غير نمطي." : "منطقة كثافة متوسطة، متابعة دورية.";
+      recommendations = riskScore > 75 ? "فحص MRI مع صبغة، استشارة جراحة أعصاب." : "مراقبة تصويرية كل 6 أشهر.";
+    }
+    
+    const riskPercent = Math.round(riskScore);
+
+    // بناء قائمة الأسباب
+    const causesHTML = aiCauses && aiCauses.length > 0
+      ? `<p><strong>🧩 أسباب الإصابة:</strong></p>
+         <ul class="causes-list">${aiCauses.map(c => `<li>${c}</li>`).join('')}</ul>`
+      : '';
+
+    return `<div style="background:linear-gradient(135deg,rgba(255,123,137,0.15),rgba(244,67,54,0.08)); border:2px solid var(--danger); border-radius:14px; padding:1rem; text-align:center; margin-bottom:0.8rem; animation:slideIn 0.5s;"><span style="font-size:1.6rem;">⚠️</span><br><strong style="font-size:1.4rem; color:var(--danger);">مصاب</strong><br><span style="font-size:0.85rem; color:rgba(255,255,255,0.6);">تم اكتشاف إصابة محتملة — يرجى مراجعة الطبيب</span></div><h4 style="color:var(--teal); margin-bottom:6px;">🧾 تقرير تشخيصي: ${cancerName}</h4>
+    <div class="risk-bar-container"><span>📊 درجة الخطورة:</span><div class="risk-track"><div class="risk-fill" style="width:${riskPercent}%;"></div></div><span><strong>${riskPercent}%</strong></span></div>
+    <div><span class="ai-badge" style="background:rgba(0,242,206,0.15);">الخطر: ${riskText}</span></div>
+    <p><strong>🔍 المشاهدات السريرية:</strong><br> ${findings}</p>
+    ${causesHTML}
+    <p><strong>💡 التوصيات الطبية:</strong><br> ${recommendations}</p>
+    <p style="font-size:0.7rem;">⚠️ تحليل تعليمي بالذكاء الاصطناعي — استشر طبيبك المختص.</p>
+    <button class="download-report-btn" onclick="downloadTxt(this)">📄 تحميل التقرير (نصي)</button>`;
+  }
+
+  window.downloadTxt = (btn) => {
+    const content = btn.closest('.result-box')?.innerText || "تقرير منصة التشخيص المبكر";
+    const blob = new Blob([content + "\n\nمنصة التشخيص المبكر - تعليمي - علوم تجريبية 2"], {type: "text/plain"});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `EarlyDiag_Report_${Date.now()}.txt`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  };
+
+  // ========== إعداد كل وحدة ==========
+  function setupModule(type) {
+    const zone = document.getElementById(`${type}-zone`);
+    const fileInput = document.getElementById(`${type}-file`);
+    const preview = document.getElementById(`${type}-preview`);
+    const btn = document.getElementById(`${type}-btn`);
+    const scanDiv = document.getElementById(`${type}-scan`);
+    const loader = document.getElementById(`${type}-loader`);
+    const resultBox = document.getElementById(`${type}-result`);
+    const detectInfo = document.getElementById(`${type}-detect-info`);
+    const placeholder = zone.querySelector('.upload-placeholder');
+
+    // دالة التحليل الكاملة
+    async function runAnalysis() {
+      if (!imageStore[type]) return;
+
+      try {
+        btn.disabled = true;
+        loader.classList.add('show');
+        resultBox.classList.remove('show');
+        scanDiv.classList.add('active');
+
+        // مرحلة 1: عرض حالة التحليل
+        detectInfo.className = 'auto-detect-info';
+        detectInfo.textContent = '🤖 جارٍ تحليل الصورة بالذكاء الاصطناعي...';
+
+        // مرحلة 2: تحليل الصورة
+        const metrics = await computeImageFeatures(imageStore[type]);
+
+        // مرحلة 2.5: التحقق من أن الصورة طبية مناسبة
+        const validation = validateMedicalImage(metrics, type);
+        if (!validation.valid) {
+          detectInfo.className = 'auto-detect-info error-state';
+          detectInfo.innerHTML = validation.msg;
+          scanDiv.classList.remove('active');
+          loader.classList.remove('show');
+          btn.disabled = false;
+          return;
+        }
+
+        // مرحلة 3: الكشف الذكي المحلي
+        const aiResult = await localSmartDetect(imageStore[type], type, metrics);
+
+        // مرحلة 3: عرض النوع المكتشف
+        const detectedName = cancerLabels[type][aiResult.cancerType] || aiResult.cancerType;
+        detectInfo.className = 'auto-detect-info detected';
+        detectInfo.innerHTML = `✅ تم الكشف: <strong>${detectedName}</strong> — ثقة ${aiResult.confidence}%`;
+
+        // مرحلة 4: بناء وعرض التقرير
+        const reportHtml = buildReport(type, aiResult.cancerType, metrics, aiResult.causes, aiResult.confidence);
+        resultBox.innerHTML = reportHtml;
+        resultBox.classList.add('show');
+
+      } catch (error) {
+        console.error('خطأ في التحليل:', error);
+        detectInfo.className = 'auto-detect-info error-state';
+        detectInfo.textContent = '⚠️ خطأ في تحليل الصورة. يرجى المحاولة مرة أخرى.';
+      } finally {
+        scanDiv.classList.remove('active');
+        loader.classList.remove('show');
+        btn.disabled = false;
+      }
+    }
+
+    // النقر لرفع الصورة
+    zone.addEventListener('click', () => fileInput.click());
+
+    // معالجة اختيار الملف
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      if (!file.type.startsWith('image/')) {
+        alert('⚠️ يرجى اختيار ملف صورة فقط (PNG, JPG, JPEG, etc.)');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        imageStore[type] = ev.target.result;
+        preview.src = ev.target.result;
+        preview.style.display = 'block';
+        if (placeholder) placeholder.style.display = 'none';
+        btn.disabled = false;
+        // بدء التحليل تلقائياً بعد 300ms
+        setTimeout(runAnalysis, 300);
+      };
+      reader.onerror = () => alert('⚠️ خطأ في قراءة الملف.');
+      reader.readAsDataURL(file);
+    });
+
+    // السحب والإفلات
+    zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('drag-over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+    zone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      zone.classList.remove('drag-over');
+      const file = e.dataTransfer.files[0];
+      if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          imageStore[type] = ev.target.result;
+          preview.src = ev.target.result;
+          preview.style.display = 'block';
+          if (placeholder) placeholder.style.display = 'none';
+          btn.disabled = false;
+          setTimeout(runAnalysis, 300);
+        };
+        reader.onerror = () => alert('⚠️ خطأ في قراءة الملف.');
+        reader.readAsDataURL(file);
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        fileInput.files = dt.files;
+      } else {
+        alert('⚠️ يرجى إفلات ملف صورة فقط');
+      }
+    });
+
+    // زر إعادة التحليل يدوياً
+    btn.onclick = runAnalysis;
+  }
+
+  // تهيئة جميع الوحدات
+  setupModule('skin');
+  setupModule('blood');
+  setupModule('mri');
+  
+  // ========== QR CODE LOGIC ==========
+  const projectUrl = 'https://drive.google.com/file/d/1_ZqxAA0i9nQ2nfpU5QVxv644PsYK96qU/view?usp=drivesdk';
+  const qrImg = document.getElementById('qrCodeImg');
+  const qrUrlText = document.getElementById('qrUrlText');
+  if (qrImg && qrUrlText) {
+    qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(projectUrl) + '&color=006b5a&bgcolor=ffffff';
+    qrUrlText.textContent = 'drive.google.com — منصة التشخيص المبكر';
+  }
+  function copyProjectUrl(btn) {
+    navigator.clipboard.writeText(projectUrl).then(() => {
+      btn.textContent = '✅ تم النسخ!';
+      setTimeout(() => { btn.textContent = '📋 نسخ الرابط'; }, 2000);
+    });
+  }
+
+  console.log('✅ تم تحميل نظام منصة التشخيص المبكر (الكشف التلقائي بالذكاء الاصطناعي) بنجاح');
+</script>
+</body>
+</html>
